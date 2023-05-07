@@ -14,7 +14,7 @@ ub = []
 MP = Model("MP")
 x = MP.addMVar((48,),vtype=GRB.BINARY,name='x_MP')
 y_mp = MP.addMVar((240,), lb=-GRB.INFINITY, name='y_mp')
-u_mp = MP.addMVar((48,),vtype=GRB.BINARY,name='u_mp')
+u_mp = MP.addMVar((48,),lb=-GRB.INFINITY,name='u_mp')
 alpha = MP.addMVar((1,),obj=1,vtype=GRB.CONTINUOUS,name='alpha')
 MP.addConstr(alpha>=c.T@y_mp)
 MP.addConstr(G@y_mp >= h-M@u_mp-E@x, name="G1")
@@ -23,11 +23,11 @@ MP.optimize()
 MP_obj = MP.ObjVal
 LB = max(MP_obj, LB)
 
-bigM = 5*10**3
+bigM = 10**4
 k = 1
 SP = Model('SP')
 y = SP.addMVar((240,), lb=-GRB.INFINITY, name='y')
-u = SP.addMVar((48,),vtype=GRB.BINARY,name='u')
+u = SP.addMVar((48,),lb=-GRB.INFINITY,vtype=GRB.CONTINUOUS,name='u')
 pi1 = SP.addMVar((G.shape[0],), lb=-GRB.INFINITY,vtype=GRB.CONTINUOUS, name='pi1')
 pi2 = SP.addMVar((G1.shape[0],),lb=-GRB.INFINITY, vtype=GRB.CONTINUOUS, name='pi2')
 v = SP.addMVar((G.shape[0],), vtype=GRB.BINARY, name='v')
