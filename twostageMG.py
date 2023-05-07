@@ -38,6 +38,8 @@ delta_u_PV=0.15
 delta_u_L=0.1
 tau_L = 12
 tau_PV = 6
+delta_u_PV = delta_u_PV*P_PV0
+delta_u_L = delta_u_L*P_L0
 # 定义变量
 T_set = np.arange(24)
 model = Model('MGs')
@@ -56,8 +58,14 @@ Psell_t = model.addVars(T_set,lb=-GRB.INFINITY, name='Psell_t')
 Ppv_t = model.addVars(T_set,lb=-GRB.INFINITY, name='Ppv_t')
 Pl_t = model.addVars(T_set,lb=-GRB.INFINITY, name='Pl_t')
 # 不确定
-B_pv_t = model.addVars(T_set,vtype=GRB.BINARY,name='B_pv_t')
-B_l_t = model.addVars(T_set,vtype=GRB.BINARY,name='B_l_t')
+# B_pv_t = model.addVars(T_set,vtype=GRB.BINARY,name='B_pv_t')
+# B_l_t = model.addVars(T_set,vtype=GRB.BINARY,name='B_l_t')
+B_pv_t = model.addVars(T_set,lb=-GRB.INFINITY,name='B_pv_t')
+B_l_t = model.addVars(T_set,lb=-GRB.INFINITY,name='B_l_t')
+model.addConstrs((B_pv_t[t]>=0)for t in T_set)
+model.addConstrs((B_pv_t[t]<=1)for t in T_set)
+model.addConstrs((B_l_t[t]>=0)for t in T_set)
+model.addConstrs((B_l_t[t]<=1)for t in T_set)
 
 model.addConstrs((Pg_t[t]>=PG_min for t in T_set),name='min-Pg_t')
 model.addConstrs((Pg_t[t]<=PG_max for t in T_set),name='max-Pg_t')
@@ -104,8 +112,8 @@ model.addConstrs((Pbuy_t[t]<=Um_t[t]*PM_max for t in T_set),name='PMbuy')
 model.addConstrs((Psell_t[t]<=(1-Um_t[t])*PM_max for t in T_set),name='PMsell')
 
 # 不确定参数
-model.addConstrs((Ppv_t[t]==P_PV0[t]-B_pv_t[t]*delta_u_PV for t in T_set),name='uncertainty-1')
-model.addConstrs((Pl_t[t]==P_L0[t]+B_l_t[t]*delta_u_L for t in T_set),name='uncertainty-2')
+model.addConstrs((Ppv_t[t]==P_PV0[t]-B_pv_t[t]*delta_u_PV[t] for t in T_set),name='uncertainty-1')
+model.addConstrs((Pl_t[t]==P_L0[t]+B_l_t[t]*delta_u_L[t] for t in T_set),name='uncertainty-2')
 model.addConstr(quicksum(B_pv_t[t]for t in T_set)<=tau_PV,name='B-1')
 model.addConstr(quicksum(B_l_t[t]for t in T_set)<=tau_L,name='B-2')
 
@@ -113,7 +121,5 @@ model.addConstr(quicksum(B_l_t[t]for t in T_set)<=tau_L,name='B-2')
 model.setObjective(obj1+obj2+obj3+obj4,GRB.MINIMIZE)
 
 # 优化
-model.optimize()
+# model.optimize()
 # model.update()
-
-
