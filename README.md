@@ -10,14 +10,11 @@
 
 程序说明：twostageMG.py为非紧凑形式的约束，KKTmatrix.py将非紧凑形式的约束转化为紧凑形式，MGCCGKKT为采用KKT方法的CCG两阶段鲁棒求解程序，运行MGCCGKKT.py即可，如果想采用benders分解可以运行benders_decomposition.py
 
-![image](https://user-images.githubusercontent.com/51228607/232202948-6b38c3f2-0d30-403a-bfc7-0d0c1014b106.png)
+![image](https://user-images.githubusercontent.com/51228607/236673307-288f25e8-2246-4d31-9e98-94644049e99a.png)
 
-可控分布式电源出力
+迭代过程
 
-![image](https://user-images.githubusercontent.com/51228607/232203153-e5c4c9cf-462e-41c5-a436-24bc2c8ca893.png)
+![image](https://user-images.githubusercontent.com/51228607/236673322-8d046f48-9a15-41f4-83b3-4149cf14e124.png)
 
 光伏出力
 
-![image](https://user-images.githubusercontent.com/51228607/232203168-4ec9a185-1041-4f85-b580-3993cd200758.png)
-
-负荷
